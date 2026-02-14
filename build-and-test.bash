@@ -2,26 +2,17 @@
 
 set -euo pipefail
 
-proj=$PWD
+venvdir=$(mktemp --directory venv-XXXXXX )
 
-workdir=$(mktemp --tmpdir --directory rorybt-XXXXXX )
+echo venvdir is $venvdir
 
-echo Working directory is $workdir
+python -m venv $venvdir
 
-cd $workdir
+source $venvdir/bin/activate
 
-# clone
-git clone --depth 1 file://$proj src
+pip install numpy scikit-build-core
 
-# build
-( cd src && pyproject-build . )
-
-# create venv, install
-python -m venv venv
-
-source venv/bin/activate
-
-pip install src/dist/*.whl # only 1, I hope!
+pip install --no-build-isolation --verbose .
 
 # run test
 python -c 'from example import square; print(f"{square(2)=}")'

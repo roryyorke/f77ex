@@ -6,6 +6,17 @@ find_package(
   COMPONENTS Interpreter Development.Module NumPy
   REQUIRED)
 
+# f2py produces two output files as of version TBD
+# version 1.22.4 (I think?) only one file, v2.x (recent as of 2025-08-17) two files
+# actual switchover TBD!
+if(${Python_NumPy_VERSION} VERSION_GREATER_EQUAL "2.0.0")
+  set(TOY_CUSTOM_OUTPUTS "examplemodule.c;example-f2pywrappers.f")
+  set(TOY_LIB_DEPS "${CMAKE_CURRENT_BINARY_DIR}/examplemodule.c;${CMAKE_CURRENT_BINARY_DIR}/example-f2pywrappers.f")
+else()
+  set(TOY_CUSTOM_OUTPUTS "examplemodule.c")
+  set(TOY_LIB_DEPS "${CMAKE_CURRENT_BINARY_DIR}/examplemodule.c")
+endif()
+
 # F2PY headers
 execute_process(
   COMMAND "${PYTHON_EXECUTABLE}" -c
@@ -20,10 +31,11 @@ set_property(TARGET fortranobject PROPERTY POSITION_INDEPENDENT_CODE ON)
 
 add_custom_command(
   OUTPUT examplemodule.c example-f2pywrappers.f
-  DEPENDS example.f
+  DEPENDS
+    "${CMAKE_CURRENT_SOURCE_DIR}/example.pyf"
   VERBATIM
   COMMAND "${Python_EXECUTABLE}" -m numpy.f2py
-          "${CMAKE_CURRENT_SOURCE_DIR}/example.f" -m example --lower)
+          "${CMAKE_CURRENT_SOURCE_DIR}/example.pyf" --lower)
 
 python_add_library(
   example MODULE "${CMAKE_CURRENT_BINARY_DIR}/examplemodule.c"

@@ -1,0 +1,10 @@
+!    -*- f90 -*-
+
+python module example
+interface
+   subroutine square(b, x)
+     real intent(int) :: b 
+     real intent(out) :: x
+   end subroutine square
+end interface
+end python module
