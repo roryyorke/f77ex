@@ -6,5 +6,10 @@ As of b6a4d44, it builds and runs.
 
 kind of hinky, but:
   - install the 3 libraries (Cmake install, that is)
+  - and ~-rpath=${ORIGIN}~ to build
+
+No python code in the wheel!
 
 * TODO auditwheel? repairwheel? whatever?
+
+this wants me to use an older compiler (or runtime, or whatever).

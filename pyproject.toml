@@ -3,7 +3,7 @@ requires = ["scikit-build-core", "numpy", "scipy_openblas32"]
 build-backend = "scikit_build_core.build"
 
 [project]
-name = "example"
+name = "foo"
 version = "0.0.1"
 dependencies = ["numpy"]
 
