@@ -1,0 +1,10 @@
+Demonstrates linking against the scipy_openblas32 wheel.
+
+As of b6a4d44, it builds and runs.
+
+* TODO vendor in openblas libs
+
+kind of hinky, but:
+  - install the 3 libraries (Cmake install, that is)
+
+* TODO auditwheel? repairwheel? whatever?
