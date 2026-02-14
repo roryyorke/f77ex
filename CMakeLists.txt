@@ -39,28 +39,12 @@ execute_process(
   OUTPUT_VARIABLE OPENBLAS_DIR
   OUTPUT_STRIP_TRAILING_WHITESPACE)
 
-
-# execute_process(
-#   COMMAND "${PYTHON_EXECUTABLE}" -c
-#           "import scipy_openblas32; import os.path; print(os.path.join(scipy_openblas32.get_lib_dir(), 'libquadmath-96973f99.so.0.0.0'))"
-#   OUTPUT_VARIABLE OPENBLAS_QUADMATH
-#   OUTPUT_STRIP_TRAILING_WHITESPACE)
-
-# execute_process(
-#   COMMAND "${PYTHON_EXECUTABLE}" -c
-#           "import scipy_openblas32; import os.path; print(os.path.join(scipy_openblas32.get_lib_dir(), 'libgfortran-040039e1.so.5.0.0'))"
-#   OUTPUT_VARIABLE OPENBLAS_GFORTRAN
-#   OUTPUT_STRIP_TRAILING_WHITESPACE)
-
-
 message(STATUS "OpenBlas library file: ${OPENBLAS_LIBRARY_FILE}")
-
 
 add_library(fortranobject OBJECT "${F2PY_INCLUDE_DIR}/fortranobject.c")
 target_link_libraries(fortranobject PUBLIC Python::NumPy)
 target_include_directories(fortranobject PUBLIC "${F2PY_INCLUDE_DIR}")
 set_property(TARGET fortranobject PROPERTY POSITION_INDEPENDENT_CODE ON)
-
 
 add_custom_command(
   OUTPUT examplemodule.c example-f2pywrappers.f
