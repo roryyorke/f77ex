@@ -10,7 +10,7 @@ python -m venv $venvdir
 
 source $venvdir/bin/activate
 
-pip install numpy scikit-build-core scipy_openblas64
+pip install numpy scikit-build-core scipy_openblas32
 
 pip install --no-build-isolation --verbose .
 

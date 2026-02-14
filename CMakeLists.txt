@@ -29,26 +29,26 @@ execute_process(
 
 execute_process(
   COMMAND "${PYTHON_EXECUTABLE}" -c
-          "import scipy_openblas64; import os.path; print(os.path.join(scipy_openblas64.get_lib_dir(), scipy_openblas64.get_library(fullname=True)))"
+          "import scipy_openblas32; import os.path; print(os.path.join(scipy_openblas32.get_lib_dir(), scipy_openblas32.get_library(fullname=True)))"
   OUTPUT_VARIABLE OPENBLAS_LIBRARY_FILE
   OUTPUT_STRIP_TRAILING_WHITESPACE)
 
 execute_process(
   COMMAND "${PYTHON_EXECUTABLE}" -c
-          "import scipy_openblas64; import os.path; print(scipy_openblas64.get_lib_dir())"
+          "import scipy_openblas32; import os.path; print(scipy_openblas32.get_lib_dir())"
   OUTPUT_VARIABLE OPENBLAS_DIR
   OUTPUT_STRIP_TRAILING_WHITESPACE)
 
 
 # execute_process(
 #   COMMAND "${PYTHON_EXECUTABLE}" -c
-#           "import scipy_openblas64; import os.path; print(os.path.join(scipy_openblas64.get_lib_dir(), 'libquadmath-96973f99.so.0.0.0'))"
+#           "import scipy_openblas32; import os.path; print(os.path.join(scipy_openblas32.get_lib_dir(), 'libquadmath-96973f99.so.0.0.0'))"
 #   OUTPUT_VARIABLE OPENBLAS_QUADMATH
 #   OUTPUT_STRIP_TRAILING_WHITESPACE)
 
 # execute_process(
 #   COMMAND "${PYTHON_EXECUTABLE}" -c
-#           "import scipy_openblas64; import os.path; print(os.path.join(scipy_openblas64.get_lib_dir(), 'libgfortran-040039e1.so.5.0.0'))"
+#           "import scipy_openblas32; import os.path; print(os.path.join(scipy_openblas32.get_lib_dir(), 'libgfortran-040039e1.so.5.0.0'))"
 #   OUTPUT_VARIABLE OPENBLAS_GFORTRAN
 #   OUTPUT_STRIP_TRAILING_WHITESPACE)
 
@@ -76,7 +76,7 @@ python_add_library(
   "${CMAKE_CURRENT_SOURCE_DIR}/example.f"
   WITH_SOABI)
 
-target_compile_options(example PRIVATE -DDGETRF=SCIPY_DGETRF_64)
+target_compile_options(example PRIVATE -DDGETRF=SCIPY_DGETRF)
 target_link_libraries(example PRIVATE fortranobject ${OPENBLAS_LIBRARY_FILE})
 target_link_options(example PRIVATE -Wl,-rpath=${OPENBLAS_DIR})
 
