@@ -25,19 +25,22 @@ execute_process(
   COMMAND "${PYTHON_EXECUTABLE}" -c
           "import numpy.f2py; print(numpy.f2py.get_include())"
   OUTPUT_VARIABLE F2PY_INCLUDE_DIR
-  OUTPUT_STRIP_TRAILING_WHITESPACE)
+  OUTPUT_STRIP_TRAILING_WHITESPACE
+  COMMAND_ERROR_IS_FATAL ANY)
 
 execute_process(
   COMMAND "${PYTHON_EXECUTABLE}" -c
           "import scipy_openblas32; import os.path; print(os.path.join(scipy_openblas32.get_lib_dir(), scipy_openblas32.get_library(fullname=True)))"
   OUTPUT_VARIABLE OPENBLAS_LIBRARY_FILE
-  OUTPUT_STRIP_TRAILING_WHITESPACE)
+  OUTPUT_STRIP_TRAILING_WHITESPACE
+  COMMAND_ERROR_IS_FATAL ANY)
 
 execute_process(
   COMMAND "${PYTHON_EXECUTABLE}" -c
           "import scipy_openblas32; import os.path; print(scipy_openblas32.get_lib_dir())"
   OUTPUT_VARIABLE OPENBLAS_DIR
-  OUTPUT_STRIP_TRAILING_WHITESPACE)
+  OUTPUT_STRIP_TRAILING_WHITESPACE
+  COMMAND_ERROR_IS_FATAL ANY)
 
 message(STATUS "OpenBlas library file: ${OPENBLAS_LIBRARY_FILE}")
 
@@ -62,6 +65,11 @@ python_add_library(
 
 target_compile_options(example PRIVATE -DDGETRF=SCIPY_DGETRF)
 target_link_libraries(example PRIVATE fortranobject ${OPENBLAS_LIBRARY_FILE})
-target_link_options(example PRIVATE -Wl,-rpath=${OPENBLAS_DIR})
+target_link_options(example PRIVATE -Wl,-rpath=\$\{ORIGIN\})
 
 install(TARGETS example DESTINATION .)
+install(FILES
+  ${OPENBLAS_DIR}/libscipy_openblas.so
+  ${OPENBLAS_DIR}/libgfortran-040039e1.so.5.0.0
+  ${OPENBLAS_DIR}/libquadmath-96973f99.so.0.0.0
+  DESTINATION .)
