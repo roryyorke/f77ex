@@ -6,6 +6,10 @@ find_package(
   COMPONENTS Interpreter Development.Module NumPy
   REQUIRED)
 
+find_package(
+  LAPACK
+  REQUIRED)
+
 # f2py produces two output files as of version TBD
 # version 1.22.4 (I think?) only one file, v2.x (recent as of 2025-08-17) two files
 # actual switchover TBD!
@@ -40,7 +44,9 @@ add_custom_command(
 python_add_library(
   example MODULE "${CMAKE_CURRENT_BINARY_DIR}/examplemodule.c"
   "${CMAKE_CURRENT_BINARY_DIR}/example-f2pywrappers.f"
-  "${CMAKE_CURRENT_SOURCE_DIR}/example.f" WITH_SOABI)
-target_link_libraries(example PRIVATE fortranobject)
+  "${CMAKE_CURRENT_SOURCE_DIR}/example.f"
+  WITH_SOABI)
+
+target_link_libraries(example PRIVATE fortranobject LAPACK::LAPACK)
 
 install(TARGETS example DESTINATION .)

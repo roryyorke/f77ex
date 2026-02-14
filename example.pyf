@@ -3,8 +3,14 @@
 python module example
 interface
    subroutine square(b, x)
-     real intent(int) :: b 
-     real intent(out) :: x
+     real intent(out) :: b
+     real intent(in) :: x
    end subroutine square
+
+   subroutine foo(b, x)
+     real intent(out) :: b
+     real intent(in) :: x
+   end subroutine foo
+
 end interface
 end python module

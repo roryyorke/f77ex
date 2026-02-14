@@ -15,4 +15,4 @@ pip install numpy scikit-build-core
 pip install --no-build-isolation --verbose .
 
 # run test
-python -c 'from example import square; print(f"{square(2)=}")'
+python -c 'from example import square, foo; print(f"{square(2)=} {foo(2)=}")'
