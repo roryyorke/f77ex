@@ -2,7 +2,7 @@ Demonstrates linking against the scipy_openblas32 wheel.
 
 As of b6a4d44, it builds and runs.
 
-* TODO vendor in openblas libs
+* DONE vendor in openblas libs
 
 kind of hinky, but:
   - install the 3 libraries (Cmake install, that is)
@@ -10,10 +10,56 @@ kind of hinky, but:
 
 No python code in the wheel!
 
-* TODO auditwheel? repairwheel? whatever?
+* DONE auditwheel? repairwheel? whatever?
 
 this wants me to use an older compiler (or runtime, or whatever).
 
 ** manylinux_2_28
 
 docker pull quay.io/pypa/manylinux_2_28_x86_64
+
+* TODO renaming symbols (DGETRF -> SCIPY_DGETRF, etc.)
+
+-cpp ?  What about other compilers then?
+
+link time?  Again, what about other compilers?
+
+** openblas
+
+https://github.com/OpenMathLib/OpenBLAS/issues/3998
+
+when *making* the library, it looks like they do it via objcopy
+
+objcopy --help has this:
+
+     #+begin_example
+     --redefine-syms <file>        --redefine-sym for all symbol pairs 
+                                     listed in <file>
+     #+end_example
+
+also, less helpfully,
+
+     #+begin_example
+     --prefix-symbols <prefix>     Add <prefix> to start of every symbol name
+     #+end_example
+
+** pkg-config
+
+does this just take care of all of the above?
+
+Not obviously.
+
+See branch pkg-config commit c116814781eb29c076bfb0bec9543fffd9ff2988.
+This configures (see below) and builds, but the .so links to dgetrf_, not scipy_dgetrf_.
+
+#+begin_example
+PKG_CONFIG_PATH=$(realpath venv/lib/python3.13/site-packages/scipy_openblas32/lib/pkgconfig) cmake -S . -B build
+#+end_example
+
+* TODO windows
+
+not sure where to get started here.  Maybe Github CI with:
+
+  - standalone cmake + fortran project
+  - basic scikit-build-core example
+  - lapack-linking example
