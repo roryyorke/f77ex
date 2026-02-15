@@ -13,3 +13,7 @@ No python code in the wheel!
 * TODO auditwheel? repairwheel? whatever?
 
 this wants me to use an older compiler (or runtime, or whatever).
+
+** manylinux_2_28
+
+docker pull quay.io/pypa/manylinux_2_28_x86_64

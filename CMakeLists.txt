@@ -63,14 +63,9 @@ python_add_library(
   "${CMAKE_CURRENT_SOURCE_DIR}/example.f"
   WITH_SOABI)
 
-target_compile_options(example PRIVATE -DDGETRF=SCIPY_DGETRF)
+# -cpp asks gfortran to do preprocessing
+target_compile_options(example PRIVATE -cpp -DDGETRF=SCIPY_DGETRF)
 target_link_libraries(example PRIVATE fortranobject ${OPENBLAS_LIBRARY_FILE})
-target_link_options(example PRIVATE -Wl,-rpath=\$\{ORIGIN\})
+target_link_options(example PRIVATE -Wl,-rpath=${OPENBLAS_DIR})
 
 install(TARGETS example DESTINATION ${SKBUILD_PLATLIB_DIR}/foo)
-
-install(FILES
-  ${OPENBLAS_DIR}/libscipy_openblas.so
-  ${OPENBLAS_DIR}/libgfortran-040039e1.so.5.0.0
-  ${OPENBLAS_DIR}/libquadmath-96973f99.so.0.0.0
-  DESTINATION ${SKBUILD_PLATLIB_DIR}/foo)
