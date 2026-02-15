@@ -1,13 +1,29 @@
 #!/bin/bash
 
-PYTHON=python3.13
+set -euo pipefail
 
-rm -rf venv wheels
-python3.13 -m venv venv
-source venv/bin/activate
+workdir=$(mktemp --tmpdir --directory)
 
-pip install scikit-build-core numpy scipy_openblas32 repairwheel
+$PYTHON -m venv $workdir/venv
+source $workdir/venv/bin/activate
 
-pip wheel --verbose --wheel-dir wheels --no-build-isolation .
+pip install --progress-bar off scikit-build-core numpy scipy_openblas32 auditwheel
 
-repairwheel --output-dir repaired wheels/foo*.whl
+pip wheel --progress-bar off --verbose --wheel-dir $workdir/inwheels --no-build-isolation .
+
+ls -lR $workdir/inwheels
+
+auditwheel repair --wheel-dir $workdir/wheelhouse $workdir/inwheels/foo*.whl
+
+cp -r $workdir/wheelhouse .
+
+deactivate
+
+$PYTHON -m venv $workdir/test
+source $workdir/test/bin/activate
+
+pip install --progress-bar off wheelhouse/foo*.whl
+
+cd $workdir
+python -c 'from foo import square, foo; print(f"{square(2)=} {foo(2)=}")'
+
