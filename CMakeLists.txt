@@ -52,15 +52,15 @@ set_property(TARGET fortranobject PROPERTY POSITION_INDEPENDENT_CODE ON)
 add_custom_command(
   OUTPUT examplemodule.c example-f2pywrappers.f
   DEPENDS
-    "${CMAKE_CURRENT_SOURCE_DIR}/example.pyf"
+    "${CMAKE_CURRENT_SOURCE_DIR}/foo/src/example.pyf"
   VERBATIM
   COMMAND "${Python_EXECUTABLE}" -m numpy.f2py
-          "${CMAKE_CURRENT_SOURCE_DIR}/example.pyf" --lower)
+          "${CMAKE_CURRENT_SOURCE_DIR}/foo/src/example.pyf" --lower)
 
 python_add_library(
   example MODULE "${CMAKE_CURRENT_BINARY_DIR}/examplemodule.c"
   "${CMAKE_CURRENT_BINARY_DIR}/example-f2pywrappers.f"
-  "${CMAKE_CURRENT_SOURCE_DIR}/example.f"
+  "${CMAKE_CURRENT_SOURCE_DIR}/foo/src/external/example.f"
   WITH_SOABI)
 
 # -cpp asks gfortran to do preprocessing
