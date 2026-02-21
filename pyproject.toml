@@ -25,5 +25,5 @@ repair-wheel-command = [
 before-build = "pip install delvewheel"
 repair-wheel-command = [
   "pip install scipy_openblas32",
-  "delvewheel repair -w {dest_dir} {wheel}"
+  "python tools/delvewheel_wrapper.py repair -w {dest_dir} {wheel}"
 ]
