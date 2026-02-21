@@ -78,6 +78,7 @@ python_add_library(
 # -cpp asks gfortran to do preprocessing
 target_compile_options(example PRIVATE -cpp -DDGETRF=SCIPY_DGETRF)
 target_link_libraries(example PRIVATE fortranobject ${OPENBLAS_LIBRARY_FILE})
-target_link_options(example PRIVATE -Wl,-rpath=${OPENBLAS_DIR})
+set_target_properties(example
+  PROPERTIES BUILD_RPATH ${OPENBLAS_DIR})
 
 install(TARGETS example DESTINATION ${SKBUILD_PLATLIB_DIR}/f77ex)
