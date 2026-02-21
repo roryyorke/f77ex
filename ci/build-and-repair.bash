@@ -25,5 +25,4 @@ source $workdir/test/bin/activate
 pip install --progress-bar off wheelhouse/foo*.whl
 
 cd $workdir
-python -c 'from foo import square, foo; print(f"{square(2)=} {foo(2)=}")'
-
+python -m foo.test.test_mat_det

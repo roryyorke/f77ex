@@ -7,9 +7,11 @@ interface
      real intent(in) :: x
    end subroutine square
 
-   subroutine foo(b, x)
-     real intent(out) :: b
-     real intent(in) :: x
+   subroutine mat_det(m, a, det_a, info)
+     integer intent(in) :: m
+     double precision intent(in), depend(m), dimension(m, m) :: a
+     double precision intent(out) :: det_a
+     integer intent(out) :: info
    end subroutine foo
 
 end interface
