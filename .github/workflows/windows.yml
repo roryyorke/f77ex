@@ -8,9 +8,9 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest]
+        os: [windows-latest]
     env:
-      CIBW_BUILD: "cp313-win_amd64 cp313-manylinux_x86_64"
+      CIBW_BUILD: "cp313-win_amd64"
 
     steps:
 
@@ -27,7 +27,7 @@ jobs:
       - name: windows-config
         if: startsWith(matrix.os, 'windows')
         run: |
-          echo "SKBUILD_CMAKE_ARGS=\"-G Ninja;-DCMAKE_Fortran_COMPILER=c:/mingw64/bin/gfortran.exe;-DCMAKE_C_COMPILER=c:/mingw64/bin/gcc.exe\"" >> $env:GITHUB_ENV
+          echo SKBUILD_CMAKE_ARGS="-G Ninja;-DCMAKE_Fortran_COMPILER=c:/mingw64/bin/gfortran.exe;-DCMAKE_C_COMPILER=c:/mingw64/bin/gcc.exe" >> $env:GITHUB_ENV
 
       - name: Build wheels
         run:  python -m cibuildwheel --output-dir wheelhouse
