@@ -28,6 +28,11 @@ jobs:
         run: |
           echo SKBUILD_CMAKE_ARGS="-G Ninja;-DCMAKE_Fortran_COMPILER=c:/mingw64/bin/gfortran.exe;-DCMAKE_C_COMPILER=c:/mingw64/bin/gcc.exe" >> $env:GITHUB_ENV
 
+      - name: macos-config
+        if: startsWith(matrix.os, 'macos')
+        run: |
+          echo SKBUILD_CMAKE_ARGS="-DCMAKE_Fortran_COMPILER=gfortran" >> $env:GITHUB_ENV
+
       - name: Build wheels
         run:  python -m cibuildwheel --output-dir wheelhouse
 
