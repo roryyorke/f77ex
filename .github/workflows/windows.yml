@@ -11,6 +11,9 @@ jobs:
         os: [windows-latest]
     env:
       CIBW_BUILD: cp313-win_amd64
+      # https://github.com/actions/runner-images/blob/main/images/windows/Windows2025-Readme.md
+      # gcc 15.2.0 installed - has gfotran?
+      FC: gfortran
 
     steps:
 
