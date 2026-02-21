@@ -1,7 +1,7 @@
 import unittest
 import numpy as np
 
-from foo import mat_det
+from f77ex import mat_det
 
 class TestMatDet(unittest.TestCase):
     def test_mat_det(self):

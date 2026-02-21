@@ -52,15 +52,15 @@ set_property(TARGET fortranobject PROPERTY POSITION_INDEPENDENT_CODE ON)
 add_custom_command(
   OUTPUT examplemodule.c example-f2pywrappers.f
   DEPENDS
-    "${CMAKE_CURRENT_SOURCE_DIR}/foo/src/example.pyf"
+    "${CMAKE_CURRENT_SOURCE_DIR}/f77ex/src/example.pyf"
   VERBATIM
   COMMAND "${Python_EXECUTABLE}" -m numpy.f2py
-          "${CMAKE_CURRENT_SOURCE_DIR}/foo/src/example.pyf" --lower)
+          "${CMAKE_CURRENT_SOURCE_DIR}/f77ex/src/example.pyf" --lower)
 
 python_add_library(
   example MODULE "${CMAKE_CURRENT_BINARY_DIR}/examplemodule.c"
   "${CMAKE_CURRENT_BINARY_DIR}/example-f2pywrappers.f"
-  "${CMAKE_CURRENT_SOURCE_DIR}/foo/src/external/example.f"
+  "${CMAKE_CURRENT_SOURCE_DIR}/f77ex/src/external/example.f"
   WITH_SOABI)
 
 # -cpp asks gfortran to do preprocessing
@@ -68,4 +68,4 @@ target_compile_options(example PRIVATE -cpp -DDGETRF=SCIPY_DGETRF)
 target_link_libraries(example PRIVATE fortranobject ${OPENBLAS_LIBRARY_FILE})
 target_link_options(example PRIVATE -Wl,-rpath=${OPENBLAS_DIR})
 
-install(TARGETS example DESTINATION ${SKBUILD_PLATLIB_DIR}/foo)
+install(TARGETS example DESTINATION ${SKBUILD_PLATLIB_DIR}/f77ex)

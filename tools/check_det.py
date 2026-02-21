@@ -1,7 +1,7 @@
 # compare against scipy
 import numpy as np
 import scipy.linalg as la
-from foo import mat_det
+from f77ex import mat_det
 
 from itertools import permutations
 

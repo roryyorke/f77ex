@@ -13,7 +13,7 @@ pip wheel --progress-bar off --verbose --wheel-dir $workdir/inwheels --no-build-
 
 ls -lR $workdir/inwheels
 
-auditwheel repair --wheel-dir $workdir/wheelhouse $workdir/inwheels/foo*.whl
+auditwheel repair --wheel-dir $workdir/wheelhouse $workdir/inwheels/f77ex*.whl
 
 cp -r $workdir/wheelhouse .
 
@@ -22,7 +22,7 @@ deactivate
 $PYTHON -m venv $workdir/test
 source $workdir/test/bin/activate
 
-pip install --progress-bar off wheelhouse/foo*.whl
+pip install --progress-bar off wheelhouse/f77ex*.whl
 
 cd $workdir
-python -m foo.test.test_mat_det
+python -m f77ex.test.test_mat_det

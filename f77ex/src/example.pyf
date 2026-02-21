@@ -5,14 +5,14 @@ interface
    subroutine square(b, x)
      real intent(out) :: b
      real intent(in) :: x
-   end subroutine square
+   end subroutine
 
    subroutine mat_det(m, a, det_a, info)
      integer intent(in) :: m
      double precision intent(in), depend(m), dimension(m, m) :: a
      double precision intent(out) :: det_a
      integer intent(out) :: info
-   end subroutine foo
+   end subroutine
 
 end interface
 end python module
