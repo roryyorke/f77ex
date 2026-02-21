@@ -1,6 +1,10 @@
 Demonstrate creating a Python wheel from Fortran source linked against
 https://github.com/MacPython/openblas-libs
 
+Needs bash and docker.  Tested on Debian 13 x64 host.
+
+Run ~./ci/docker-build.bash~ to build ~f77ex-0.0.1-cp313-cp313-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl~.
+
 * Tasks
 
 ** TODO renaming symbols (DGETRF -> SCIPY_DGETRF, etc.)
