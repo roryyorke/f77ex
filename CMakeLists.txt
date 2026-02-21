@@ -28,6 +28,10 @@ execute_process(
   OUTPUT_STRIP_TRAILING_WHITESPACE
   COMMAND_ERROR_IS_FATAL ANY)
 
+cmake_path(CONVERT ${F2PY_INCLUDE_DIR} TO_CMAKE_PATH_LIST F2PY_INCLUDE_DIR)
+
+message(STATUS "F2PY_INCLUDE_DIR: ${F2PY_INCLUDE_DIR}")
+
 execute_process(
   COMMAND "${PYTHON_EXECUTABLE}" -c
           "import scipy_openblas32; import os.path; print(scipy_openblas32.get_lib_dir())"
