@@ -12,8 +12,8 @@ jobs:
     env:
       CIBW_BUILD: cp313-win_amd64
       # https://github.com/actions/runner-images/blob/main/images/windows/Windows2025-Readme.md
-      # gcc 15.2.0 installed - has gfotran?
-      FC: gfortran
+      # gcc 15.2.0 installed - has gfortran?
+      SKBUILD_CMAKE_ARGS: "-DCMAKE_Fortran_COMPILER=gfortran"
 
     steps:
 
@@ -27,7 +27,7 @@ jobs:
         run: python -m pip install cibuildwheel==3.3.1
 
       - name: Build wheels
-        run: python -m cibuildwheel --output-dir wheelhouse
+        run:  python -m cibuildwheel --output-dir wheelhouse
 
       - uses: actions/upload-artifact@v6
         with:
