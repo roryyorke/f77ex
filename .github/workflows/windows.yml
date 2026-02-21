@@ -21,6 +21,16 @@ jobs:
 
       - uses: actions/setup-python@v6
 
+      - name: build example.f
+        run: gfortran-15 -c f77ex/src/external/example.f
+
+      - name: macos-config
+        if: startsWith(matrix.os, 'macos')
+        run: |
+          gfortran_path=$(command -v gfortran-15)
+          echo "gfortran_path is ${gfortran_path}"
+          echo SKBUILD_CMAKE_ARGS="-DCMAKE_Fortran_COMPILER=$(command -v gfortran-15)" >> $env:GITHUB_ENV
+
       - name: Install cibuildwheel
         run: python -m pip install cibuildwheel==3.3.1
 
@@ -28,11 +38,6 @@ jobs:
         if: startsWith(matrix.os, 'windows')
         run: |
           echo SKBUILD_CMAKE_ARGS="-G Ninja;-DCMAKE_Fortran_COMPILER=c:/mingw64/bin/gfortran.exe;-DCMAKE_C_COMPILER=c:/mingw64/bin/gcc.exe" >> $env:GITHUB_ENV
-
-      - name: macos-config
-        if: startsWith(matrix.os, 'macos')
-        run: |
-          echo SKBUILD_CMAKE_ARGS="-DCMAKE_Fortran_COMPILER=$(command -v gfortran-15)" >> $env:GITHUB_ENV
 
       - name: Build wheels
         run:  python -m cibuildwheel --output-dir wheelhouse
