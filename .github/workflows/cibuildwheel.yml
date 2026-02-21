@@ -11,6 +11,9 @@ jobs:
         os: [ubuntu-latest, windows-latest, macos-latest]
 
     steps:
+      - env:
+        CIBW_BUILD: cp313-manylinux_x86_64
+
       - uses: actions/checkout@v6
         with:
           persist-credentials: false
