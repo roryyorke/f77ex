@@ -24,6 +24,14 @@ repair-wheel-command = [
   "auditwheel repair -w {dest_dir} {wheel}",
 ]
 
+[tool.cibuildwheel.macos]
+repair-wheel-command = [
+  "pip install scipy_openblas32",
+  "LD_LIBRARY_PATH=$(python -c \"import scipy_openblas32; import os.path; print(scipy_openblas32.get_lib_dir())\")",
+  "delocate-wheel -w {dest_dir} {wheel}",
+]
+
+
 [tool.cibuildwheel.windows]
 before-build = "pip install delvewheel"
 repair-wheel-command = [
