@@ -32,7 +32,7 @@ jobs:
       - name: macos-config
         if: startsWith(matrix.os, 'macos')
         run: |
-          echo SKBUILD_CMAKE_ARGS="-DCMAKE_Fortran_COMPILER=gfortran-15" >> $env:GITHUB_ENV
+          echo SKBUILD_CMAKE_ARGS="-DCMAKE_Fortran_COMPILER=$(command -v gfortran-15)" >> $env:GITHUB_ENV
 
       - name: Build wheels
         run:  python -m cibuildwheel --output-dir wheelhouse
