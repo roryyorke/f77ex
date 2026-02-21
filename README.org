@@ -16,3 +16,13 @@ Does scipy-openblas only support gfortran?
 ** TODO Windows
 
 Use fortran?  How to ensure the right compiler is used?
+
+** TODO cibuildwheel
+
+*** basic check
+
+~CIBW_BUILD=cp313-manylinux_x86_64 cibuildwheel~
+
+*** cibuildwheel doesn't bundle delvewheel
+
+do it manually: https://cibuildwheel.pypa.io/en/stable/options/#examples_11
