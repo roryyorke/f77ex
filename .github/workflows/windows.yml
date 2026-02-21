@@ -23,6 +23,12 @@ jobs:
 
       - uses: actions/setup-python@v6
 
+      - name: compile with gfortran
+        run: gfortran -c f77ex/src/external/example.f
+
+      - name: where is gfortran
+        run: which gfortran
+
       - name: Install cibuildwheel
         run: python -m pip install cibuildwheel==3.3.1
 
