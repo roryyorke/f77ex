@@ -20,3 +20,12 @@ repair-wheel-command = [
   "LD_LIBRARY_PATH=$(python -c \"import scipy_openblas32; import os.path; print(scipy_openblas32.get_lib_dir())\")",
   "auditwheel repair -w {dest_dir} {wheel}",
 ]
+
+[tool.cibuildwheel.windows]
+before-build = "pip install delvewheel"
+repair-wheel-command = [
+  "pip install scipy_openblas32",
+  # bash? does PATH work?
+  "PATH=$PATH:$(python -c \"import scipy_openblas32; import os.path; print(scipy_openblas32.get_lib_dir())\")",
+  "delvewheel repair -w {dest_dir} {wheel}"
+]
