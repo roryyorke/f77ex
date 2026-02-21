@@ -9,10 +9,10 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
+    env:
+      CIBW_BUILD: cp313-manylinux_x86_64
 
     steps:
-      - env:
-        CIBW_BUILD: cp313-manylinux_x86_64
 
       - uses: actions/checkout@v6
         with:
