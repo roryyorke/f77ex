@@ -26,6 +26,14 @@ pip install --progress-bar off scipy_openblas32 delocate
 
 OPENBLAS_DIR=$(python -c 'import scipy_openblas32; import os.path; print(scipy_openblas32.get_lib_dir())')
 
+echo "---listdeps no DYLD_LIBRARY_PATH"
+delocate-listdeps --depending $workdir/inwheels/f77ex*.whl
+
+echo "---listdeps w/ DYLD_LIBRARY_PATH"
+DYLD_LIBRARY_PATH=$OPENBLAS_DIR delocate-listdeps --depending $workdir/inwheels/f77ex*.whl
+
+echo "---delocate-wheel; fails"
+
 DYLD_LIBRARY_PATH=$OPENBLAS_DIR delocate-wheel --wheel-dir $workdir/wheelhouse $workdir/inwheels/f77ex*.whl
 
 deactivate
