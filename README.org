@@ -1,28 +1,25 @@
 Demonstrate creating a Python wheel from Fortran source linked against
 https://github.com/MacPython/openblas-libs
 
-Needs bash and docker.  Tested on Debian 13 x64 host.
+* manylinux build
+
+Needs bash and docker.  Tested on Debian 13 x64 host.  Includes auditwheel step.
 
 Run ~./ci/docker-build.bash~ to build ~f77ex-0.0.1-cp313-cp313-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl~.
 
-* Tasks
+* cibuildwheel
 
-** TODO renaming symbols (DGETRF -> SCIPY_DGETRF, etc.)
-
-Via preprocessor, or modifying .o files, or something else?
-
-Does scipy-openblas only support gfortran?
-
-** TODO Windows
-
-Use fortran?  How to ensure the right compiler is used?
-
-** TODO cibuildwheel
-
-*** basic check
+** basic check
 
 ~CIBW_BUILD=cp313-manylinux_x86_64 cibuildwheel~
 
-*** cibuildwheel doesn't bundle delvewheel
+** Windows
 
-do it manually: https://cibuildwheel.pypa.io/en/stable/options/#examples_11
+ - compile with Ninja, gcc, gfortran via SKBUILD_CMAKE_ARGS
+   - perhaps using ninja or make one can still use msvc - does it matter?
+
+ - wheel repair
+   - happens after build environment deleted
+   - install scipy_openblas32
+   - install delvewheel
+   - use delvewheel_wrapper.py to manipulate PATH to find scipy_openblas DLL

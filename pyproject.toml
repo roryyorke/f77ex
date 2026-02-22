@@ -11,9 +11,6 @@ dependencies = ["numpy"]
 ninja.version = ">=1.10"
 cmake.version = ">=3.17.2"
 
-# [tool.cibuildwheel.windows]
-# before-all = "pip install scipy_openblas32"
-
 [tool.cibuildwheel]
 test-command = "python -m f77ex.test.test_mat_det"
 
@@ -27,10 +24,10 @@ repair-wheel-command = [
 [tool.cibuildwheel.macos]
 repair-wheel-command = [
   "pip install scipy_openblas32",
+  # this doesn't work; delocate-wheel can't find scipy-openblas libs
   "LD_LIBRARY_PATH=$(python -c \"import scipy_openblas32; import os.path; print(scipy_openblas32.get_lib_dir())\")",
   "delocate-wheel -w {dest_dir} {wheel}",
 ]
-
 
 [tool.cibuildwheel.windows]
 before-build = "pip install delvewheel"
