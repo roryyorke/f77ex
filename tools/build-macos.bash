@@ -16,6 +16,22 @@ pip wheel --progress-bar off --verbose --wheel-dir $workdir/inwheels --no-build-
 
 deactivate
 
+echo "--Inspect"
+
+unzip -l $workdir/inwheels/f77ex*.whl
+
+mkdir unzipped
+
+unzip $workdir/inwheels/f77ex*.whl -d unzipped
+
+echo "---list of .so"
+
+find unzipped -iname "*.so"
+
+echo "---otool -L per .so"
+
+find unzipped -iname "*.so" -exec otool -L "{}" ";"
+
 # echo "--Repair"
 
 # # repair in a different venv
@@ -35,15 +51,15 @@ deactivate
 
 # deactivate
 
-echo "--Test in build env"
+# echo "--Test in build env"
 
-# $PYTHON -m venv $workdir/test
-# source $workdir/test/bin/activate
-pip install --progress-bar off $workdir/inwheels/f77ex*.whl
+# # $PYTHON -m venv $workdir/test
+# # source $workdir/test/bin/activate
+# pip install --progress-bar off $workdir/inwheels/f77ex*.whl
 
-cd $workdir
-python -m f77ex.test.test_mat_det
+# cd $workdir
+# python -m f77ex.test.test_mat_det
 
-# echo "--Copy"
+# # echo "--Copy"
 
-# cp --recursive $workdir/wheelhouse $output_dir
+# # cp --recursive $workdir/wheelhouse $output_dir
