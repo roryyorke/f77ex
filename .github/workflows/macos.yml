@@ -17,7 +17,7 @@ jobs:
           echo SKBUILD_CMAKE_ARGS="-DCMAKE_C_COMPILER=$(command -v gcc-15);-DCMAKE_Fortran_COMPILER=$(command -v gfortran-15)" >> $GITHUB_ENV
 
       - name: Build
-        run:  ./tools/build-macos.bash
+        run:  PYTHON=python3.13 ./tools/build-macos.bash
 
       - uses: actions/upload-artifact@v6
         with:
