@@ -1,0 +1,25 @@
+name: manylinux build
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: [macos-14]
+
+    steps:
+
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+
+      - name: macos-config
+        run: |
+          echo SKBUILD_CMAKE_ARGS="-DCMAKE_C_COMPILER=$(command -v gcc-15);-DCMAKE_Fortran_COMPILER=$(command -v gfortran-15)" >> $GITHUB_ENV
+
+      - name: Build
+        run:  ./tools/build-macos.bash
+
+      - uses: actions/upload-artifact@v6
+        with:
+          name: manylinux
+          path: ./wheelhouse/*.whl
