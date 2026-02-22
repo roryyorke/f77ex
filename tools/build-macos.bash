@@ -17,7 +17,7 @@ pip wheel --progress-bar off --verbose --wheel-dir $workdir/inwheels --no-build-
 OPENBLAS_DIR=$(python -c 'import scipy_openblas32; import os.path; print(scipy_openblas32.get_lib_dir())')
 
 echo "--Repair"
-LD_LIBRARY_PATH=$OPENBLAS_DIR delocate-wheel --wheel-dir $workdir/wheelhouse $workdir/inwheels/f77ex*.whl
+DYLD_LIBRARY_PATH=$OPENBLAS_DIR delocate-wheel --wheel-dir $workdir/wheelhouse $workdir/inwheels/f77ex*.whl
 
 deactivate
 
