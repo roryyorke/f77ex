@@ -39,7 +39,7 @@ echo "--Test in build env"
 
 # $PYTHON -m venv $workdir/test
 # source $workdir/test/bin/activate
-pip install --progress-bar off $workdir/wheelhouse/f77ex*.whl
+pip install --progress-bar off $workdir/inwheels/f77ex*.whl
 
 cd $workdir
 python -m f77ex.test.test_mat_det
