@@ -1,6 +1,7 @@
 C     Copied from scikit-build-core Fotran example
 
 C     Basic non-LAPACK-dependent routine for sanity checks
+C     dx' = a * x + b * u
       SUBROUTINE SQUARE(B, X)
       REAL B
       REAL X
