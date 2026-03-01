@@ -75,8 +75,10 @@ python_add_library(
   "${CMAKE_CURRENT_SOURCE_DIR}/f77ex/src/external/example.f"
   WITH_SOABI)
 
-# -cpp asks gfortran to do preprocessing, @ says to get options from file
-target_compile_options(example PRIVATE -cpp "@${CMAKE_CURRENT_SOURCE_DIR}/scipy-openblas-symbols/scipy-openblas-symbols.def")
+# @ says to get options from file
+# CMake has two steps: original => preprocessed, then preprocessed => object
+# the @... is only effective in the first stage
+target_compile_options(example PRIVATE "@${CMAKE_CURRENT_SOURCE_DIR}/scipy-openblas-symbols/scipy-openblas-symbols.def")
 target_link_libraries(example PRIVATE fortranobject ${OPENBLAS_LIBRARY_FILE})
 set_target_properties(example
   PROPERTIES BUILD_RPATH ${OPENBLAS_DIR})
