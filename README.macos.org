@@ -1,0 +1,44 @@
+Demonstrate creating a Python wheel from Fortran source linked against
+https://github.com/MacPython/openblas-libs
+
+* manylinux build
+
+Needs bash and docker.  Tested on Debian 13 x64 host.  Includes auditwheel step.
+
+Run ~./ci/docker-build.bash~ to build ~f77ex-0.0.1-cp313-cp313-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl~.
+
+* cibuildwheel
+
+** basic check
+
+~CIBW_BUILD=cp313-manylinux_x86_64 cibuildwheel~
+
+** Windows
+
+ - compile with Ninja, gcc, gfortran via SKBUILD_CMAKE_ARGS
+   - perhaps using ninja or make one can still use msvc - does it matter?
+
+ - wheel repair
+   - happens after build environment deleted
+   - install scipy_openblas32
+   - install delvewheel
+   - use delvewheel_wrapper.py to manipulate PATH to find scipy_openblas DLL
+
+* macos
+
+
+#+begin_example
+unzipped/f77ex/example.cpython-313-darwin.so:
+	@rpath/libscipy_openblas.dylib (compatibility version 0.0.0, current version 0.0.0)
+	/opt/homebrew/opt/gcc/lib/gcc/current/libgfortran.5.dylib (compatibility version 6.0.0, current version 6.0.0)
+	/opt/homebrew/opt/gcc/lib/gcc/current/libquadmath.0.dylib (compatibility version 1.0.0, current version 1.0.0)
+	/usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1345.120.2)
+#+end_example
+
+
+
+unzipped/f77ex/example.cpython-313-darwin.so:
+	@rpath/libscipy_openblas.dylib (compatibility version 0.0.0, current version 0.0.0)
+	/opt/homebrew/opt/gcc/lib/gcc/current/libgfortran.5.dylib (compatibility version 6.0.0, current version 6.0.0)
+	/opt/homebrew/opt/gcc/lib/gcc/current/libquadmath.0.dylib (compatibility version 1.0.0, current version 1.0.0)
+	/usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1345.120.2)
