@@ -22,10 +22,11 @@ repair-wheel-command = [
 ]
 
 [tool.cibuildwheel.macos]
+
+before-build = "bash {project}/tools/cibw_before_build_macos.sh"
 repair-wheel-command = [
-  "pip install scipy_openblas32",
   # this doesn't work; delocate-wheel can't find scipy-openblas libs
-  "LD_LIBRARY_PATH=$(python -c \"import scipy_openblas32; import os.path; print(scipy_openblas32.get_lib_dir())\")",
+  "DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH:$(python -c \"import scipy_openblas32; import os.path; print(scipy_openblas32.get_lib_dir())\")",
   "delocate-wheel -w {dest_dir} {wheel}",
 ]
 
