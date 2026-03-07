@@ -29,7 +29,7 @@ OPENBLAS_DIR=$(python -c 'import scipy_openblas32; import os.path; print(scipy_o
 lib_loc=$(python -c"import scipy_openblas32; print(scipy_openblas32.get_lib_dir())")
 
 echo --file-listting of lib_loc=$lib_loc
-ls $lib
+ls $lib_loc
 
 echo --otool -L of lib_loc/libsci-star
 otool -L $lib_loc/libsci*
