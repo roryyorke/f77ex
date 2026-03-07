@@ -53,4 +53,4 @@ python -m f77ex.test.test_mat_det
 
 echo "--Copy"
 
-cp --recursive $workdir/wheelhouse $output_dir
+cp -a $workdir/wheelhouse $output_dir
