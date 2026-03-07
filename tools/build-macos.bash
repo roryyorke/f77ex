@@ -28,9 +28,6 @@ OPENBLAS_DIR=$(python -c 'import scipy_openblas32; import os.path; print(scipy_o
 
 lib_loc=$(python -c"import scipy_openblas32; print(scipy_openblas32.get_lib_dir())")
 
-echo --DYLD_LIBRARY_PATH
-echo $DYLD_LIBRARY_PATH
-
 echo --file-listting of lib_loc=$lib_loc
 ls $lib_loc
 
@@ -41,7 +38,7 @@ install_name_tool -change @loader_path/../.dylibs/libgfortran.5.dylib @rpath/lib
 install_name_tool -change @loader_path/../.dylibs/libgcc_s.1.1.dylib @rpath/libgcc_s.1.1.dylib $lib_loc/libsci*
 install_name_tool -change @loader_path/../.dylibs/libquadmath.0.dylib @rpath/libquadmath.0.dylib $lib_loc/libsci*
 
-DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH:$OPENBLAS_DIR delocate-wheel --wheel-dir $workdir/wheelhouse $workdir/inwheels/f77ex*.whl
+DYLD_LIBRARY_PATH=/opt/homebrew/opt/gcc/lib/gcc/current:$OPENBLAS_DIR delocate-wheel --wheel-dir $workdir/wheelhouse $workdir/inwheels/f77ex*.whl
 
 deactivate
 
