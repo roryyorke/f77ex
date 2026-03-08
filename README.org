@@ -48,3 +48,8 @@ that builds a wheel that *doesn't* need repairing (!), but also auditwheel fails
 **** auditwheel detail
 
 I'm going to not INSTALL_RPATH etc, and also not install the extra libs, and see if I can run auditwheel manually.
+
+That worked fine.  I wonder why the same command failed when I ran it with the wheel where I had set RPATH to ${ORIGIN}.
+
+... hm.  I wonder if CMake's RPATH business screwed up something in delocate?
+

@@ -14,6 +14,10 @@ python -m venv --clear pypa-build/venv
 
 source pypa-build/venv/bin/activate
 
-pip install pypa-build/f77ex-0.0.1-cp313-cp313-linux_x86_64.whl
+pip install auditwheel patchelf scipy_openblas32
 
-python -I -m f77ex.test.test_mat_det
+lib_loc=$(python -c"import scipy_openblas32; print(scipy_openblas32.get_lib_dir())")
+
+echo $lib_loc
+
+LD_LIBRARY_PATH=$lib_loc auditwheel repair -w pypa-build/wheelhouse pypa-build/f77ex-0.0.1-cp313-cp313-linux_x86_64.whl
