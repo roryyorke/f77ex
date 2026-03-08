@@ -10,6 +10,10 @@ wheel=$2
 python -m pip install scipy-openblas32
 lib_loc=$(python -c"import scipy_openblas32; print(scipy_openblas32.get_lib_dir())")
 
+ls $lib_loc
+
+otool -L $lib_loc/libsci*
+
 # install_name_tool -delete_rpath @loader_path/../.dylibs/libgfortran.5.dylib $lib_loc/libsci*
 # install_name_tool -delete_rpath @loader_path/../.dylibs/libgcc_s.1.1.dylib $lib_loc/libsci*
 # install_name_tool -delete_rpath @loader_path/../.dylibs/libquadmath.0.dylib $lib_loc/libsci*
