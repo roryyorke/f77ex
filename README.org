@@ -23,3 +23,12 @@ Run ~./ci/docker-build.bash~ to build ~f77ex-0.0.1-cp313-cp313-manylinux_2_27_x8
    - install scipy_openblas32
    - install delvewheel
    - use delvewheel_wrapper.py to manipulate PATH to find scipy_openblas DLL
+
+** TODO install openblas library
+
+instead of installing scipy-openblas wheel at repair time, install the openblas library as part of the build step
+
+test this on linux first.
+
+For Windows and Linux, want to install everything from lib dir.  For MacOS probably only libscipy-openblas.
+
