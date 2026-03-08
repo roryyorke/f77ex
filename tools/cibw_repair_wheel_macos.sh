@@ -14,4 +14,11 @@ install_name_tool -change @loader_path/../.dylibs/libgfortran.5.dylib @rpath/lib
 install_name_tool -change @loader_path/../.dylibs/libgcc_s.1.1.dylib @rpath/libgcc_s.1.1.dylib $lib_loc/libsci*
 install_name_tool -change @loader_path/../.dylibs/libquadmath.0.dylib @rpath/libquadmath.0.dylib $lib_loc/libsci*
 
-DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH:$lib_loc delocate-wheel -w $dest_dir $wheel
+if [ ! -z $DYLD_FALLBACK_LIBRARY_PATH ]; then
+    echo "DYLD_FALLBACK_LIBRARY_PATH set to $DYLD_FALLBACK_LIBRARY_PATH";
+    exit 1;
+fi
+
+export DYLD_FALLBACK_LIBRARY_PATH=$lib_loc
+
+delocate-wheel -w $dest_dir $wheel

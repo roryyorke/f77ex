@@ -53,3 +53,11 @@ That worked fine.  I wonder why the same command failed when I ran it with the w
 
 ... hm.  I wonder if CMake's RPATH business screwed up something in delocate?
 
+
+** TODO configure DYLD_FALLBACK_LIBRARY_PATH
+
+steps:
+  - install scipy_openblas32
+  - modify the library to use rpath
+  - set DYLD_FALLBACK_LIBRARY_PATH to point to the directory containing this library
+  - run delocate

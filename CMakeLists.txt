@@ -86,10 +86,5 @@ python_add_library(
 # -cpp asks gfortran to do preprocessing
 target_compile_options(example PRIVATE -cpp -DDGETRF=SCIPY_DGETRF)
 target_link_libraries(example PRIVATE fortranobject OpenBLAS)
-# linux only?
-set_target_properties(example PROPERTIES INSTALL_RPATH \${ORIGIN})
 
 install(TARGETS example DESTINATION ${SKBUILD_PLATLIB_DIR}/f77ex)
-install(IMPORTED_RUNTIME_ARTIFACTS OpenBLAS DESTINATION ${SKBUILD_PLATLIB_DIR}/f77ex)
-install(IMPORTED_RUNTIME_ARTIFACTS OpenBLAS_Gfortran DESTINATION ${SKBUILD_PLATLIB_DIR}/f77ex)
-install(IMPORTED_RUNTIME_ARTIFACTS OpenBLAS_Quadmath DESTINATION ${SKBUILD_PLATLIB_DIR}/f77ex)
