@@ -10,9 +10,10 @@ wheel=$2
 python -m pip install scipy-openblas32
 lib_loc=$(python -c"import scipy_openblas32; print(scipy_openblas32.get_lib_dir())")
 
-install_name_tool -change @loader_path/../.dylibs/libgfortran.5.dylib @rpath/libgfortran.5.dylib $lib_loc/libsci*
-install_name_tool -change @loader_path/../.dylibs/libgcc_s.1.1.dylib @rpath/libgcc_s.1.1.dylib $lib_loc/libsci*
-install_name_tool -change @loader_path/../.dylibs/libquadmath.0.dylib @rpath/libquadmath.0.dylib $lib_loc/libsci*
+install_name_tool -delete_rpath @loader_path/../.dylibs/libgfortran.5.dylib $lib_loc/libsci*
+install_name_tool -delete_rpath @loader_path/../.dylibs/libgcc_s.1.1.dylib $lib_loc/libsci*
+install_name_tool -delete_rpath @loader_path/../.dylibs/libquadmath.0.dylib $lib_loc/libsci*
+
 
 if [ ! -z $DYLD_FALLBACK_LIBRARY_PATH ]; then
     echo "DYLD_FALLBACK_LIBRARY_PATH set to $DYLD_FALLBACK_LIBRARY_PATH";
