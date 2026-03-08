@@ -32,3 +32,15 @@ test this on linux first.
 
 For Windows and Linux, want to install everything from lib dir.  For MacOS probably only libscipy-openblas.
 
+*** linux results
+
+a82cf9b, tools/basic-build.bash
+
+- installed the openblas libraries alongside own library
+- used RPATH ~${ORIGIN}~ for own library
+
+that builds a wheel that *doesn't* need repairing (!), but also auditwheel fails to process (!!), even with LD_LIBRARY_PATH setup.
+
+**** auditwheel detail
+
+I'm going to not INSTALL_RPATH etc, and also not install the extra libs, and see if I can run auditwheel manually.
