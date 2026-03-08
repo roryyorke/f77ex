@@ -56,6 +56,14 @@ message(STATUS "OpenBlas library file 2: ${OPENBLAS_LIBRARY_FILE}")
 add_library(OpenBLAS SHARED IMPORTED)
 set_target_properties(OpenBLAS PROPERTIES IMPORTED_LOCATION ${OPENBLAS_LIBRARY_FILE})
 
+cmake_path(APPEND OPENBLAS_DIR libgfortran-040039e1.so.5.0.0 OUTPUT_VARIABLE OPENBLAS_GFORTRAN)
+add_library(OpenBLAS_Gfortran SHARED IMPORTED)
+set_target_properties(OpenBLAS_Gfortran PROPERTIES IMPORTED_LOCATION ${OPENBLAS_GFORTRAN})
+
+cmake_path(APPEND OPENBLAS_DIR libquadmath-96973f99.so.0.0.0 OUTPUT_VARIABLE OPENBLAS_QUADMATH)
+add_library(OpenBLAS_Quadmath SHARED IMPORTED)
+set_target_properties(OpenBLAS_Quadmath PROPERTIES IMPORTED_LOCATION ${OPENBLAS_QUADMATH})
+
 add_library(fortranobject OBJECT "${F2PY_INCLUDE_DIR}/fortranobject.c")
 target_link_libraries(fortranobject PUBLIC Python::NumPy)
 target_include_directories(fortranobject PUBLIC "${F2PY_INCLUDE_DIR}")
@@ -78,8 +86,10 @@ python_add_library(
 # -cpp asks gfortran to do preprocessing
 target_compile_options(example PRIVATE -cpp -DDGETRF=SCIPY_DGETRF)
 target_link_libraries(example PRIVATE fortranobject OpenBLAS)
-set_target_properties(example
-  PROPERTIES BUILD_RPATH ${OPENBLAS_DIR})
+# linux only?
+set_target_properties(example PROPERTIES INSTALL_RPATH \${ORIGIN})
 
 install(TARGETS example DESTINATION ${SKBUILD_PLATLIB_DIR}/f77ex)
 install(IMPORTED_RUNTIME_ARTIFACTS OpenBLAS DESTINATION ${SKBUILD_PLATLIB_DIR}/f77ex)
+install(IMPORTED_RUNTIME_ARTIFACTS OpenBLAS_Gfortran DESTINATION ${SKBUILD_PLATLIB_DIR}/f77ex)
+install(IMPORTED_RUNTIME_ARTIFACTS OpenBLAS_Quadmath DESTINATION ${SKBUILD_PLATLIB_DIR}/f77ex)
