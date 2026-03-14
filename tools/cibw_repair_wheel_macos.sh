@@ -23,7 +23,7 @@ if [ ! -z $DYLD_LIBRARY_PATH ]; then
     exit 1;
 fi
 
-export DYLD_LIBRARY_PATH=$lib_loc
+export DYLD_LIBRARY_PATH=$lib_loc:/opt/homebrew/Cellar/gcc/15.2.0_1/lib/gcc/current
 
 delocate-listdeps $wheel
 delocate-wheel -w $dest_dir $wheel
