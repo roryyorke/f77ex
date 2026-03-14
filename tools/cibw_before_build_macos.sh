@@ -11,5 +11,5 @@ else
 fi
 
 echo ==gfortran -Wl,---verbose output
-/usr/local/bin/gfortran -Wl,--verbose
+/opt/homebrew/bin/gfortran -Wl,--verbose
 echo ==gfortran -Wl,---verbose output end
