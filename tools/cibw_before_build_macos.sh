@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# from pdfo https://github.com/pdfo/pdfo/blob/main/python/build_tools/cibw_before_build_macos.sh
 set -ex
 
 ARCH=$(uname -m)
