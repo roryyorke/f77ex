@@ -42,3 +42,7 @@ unzipped/f77ex/example.cpython-313-darwin.so:
 	/opt/homebrew/opt/gcc/lib/gcc/current/libgfortran.5.dylib (compatibility version 6.0.0, current version 6.0.0)
 	/opt/homebrew/opt/gcc/lib/gcc/current/libquadmath.0.dylib (compatibility version 1.0.0, current version 1.0.0)
 	/usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1345.120.2)
+
+* search cibuildwheel macos gfortran and...
+
+https://github.com/pypa/cibuildwheel/discussions/1051#discussioncomment-2371120
