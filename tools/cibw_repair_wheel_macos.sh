@@ -18,6 +18,10 @@ install_name_tool -change @loader_path/../.dylibs/libgfortran.5.dylib @rpath/lib
 install_name_tool -change @loader_path/../.dylibs/libgcc_s.1.1.dylib @rpath/libgcc_s.1.1.dylib $lib_loc/libsci*
 install_name_tool -change @loader_path/../.dylibs/libquadmath.0.dylib @rpath/libquadmath.0.dylib $lib_loc/libsci*
 
+echo ==ld --verbose output
+ld --verbose
+echo ==ld --verbose output end
+
 if [ ! -z $DYLD_LIBRARY_PATH ]; then
     echo "DYLD_LIBRARY_PATH set to $DYLD_LIBRARY_PATH";
     exit 1;
