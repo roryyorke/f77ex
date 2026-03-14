@@ -9,3 +9,7 @@ if [ "$ARCH" == "arm64" ]; then
 else
     sudo ln -fs /usr/local/bin/gfortran-12 /usr/local/bin/gfortran
 fi
+
+echo ==gfortran -Wl,---verbose output
+gfortran -Wl,--verbose
+echo ==gfortran -Wl,---verbose output end
