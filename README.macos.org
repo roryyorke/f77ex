@@ -464,4 +464,6 @@ ls -l /opt/homebrew/bin
 
 * results
 
-314eb21 - cibuildwheel for Python 3.8 through 3.14, including 3.14t
+314eb21 - macos-14 (=arm?) cibuildwheel for Python 3.8 through 3.14, including 3.14t
+
+e46548b - macos-15-intel cibuildwheel for Python 3.8 through 3.14, including 3.14t
