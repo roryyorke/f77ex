@@ -2,10 +2,8 @@
 
 set -ex
 
-echo $(command -v gfortran-13)
-
-gfortran_bin=/opt/homebrew/bin/gfortran-13
-gcc_bin=/opt/homebrew/bin/gcc-13
+gfortran_bin=$(command -v gfortran-13)
+gcc_bin=$(command -v gcc-13)
 
 [ -x "${gfortran_bin}" ] || { echo "Fortran compiler ${gfortran_bin} doesn't exist or not executable"; exit 1; }
 [ -x "${gcc_bin}" ] || { echo "C compiler ${gcc_bin} doesn't exist or not executable"; exit 1; }
