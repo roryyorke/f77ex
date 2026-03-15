@@ -1,0 +1,16 @@
+#!/bin/bash
+
+set -ex
+
+sudo ln -sf /opt/homebrew/bin/gfortran-13 /usr/local/bin/slycot-gfortran 
+sudo ln -sf /opt/homebrew/bin/gcc-13 /usr/local/bin/slycot-gcc 
+
+if [ ! -x $(realpath $(command -v slycot-gfortran)) ]; then
+    echo "Can't find Fortran compiler"
+    exit 1
+fi
+
+if [ ! -x $(realpath $(command -v slycot-gcc)) ]; then
+    echo "Can't find C compiler"
+    exit 1
+fi
