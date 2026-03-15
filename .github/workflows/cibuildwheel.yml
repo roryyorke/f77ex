@@ -27,7 +27,7 @@ jobs:
         # these will be used in build and repair stages
         run: |
           bash ./tools/cibw-setup-macos
-          echo SKBUILD_CMAKE_ARGS="-G Ninja;-DCMAKE_Fortran_COMPILER=$(command -v slycot-gfortran);-DCMAKE_C_COMPILER=$(command -v slycot-gcc)" >> $env:GITHUB_ENV
+          echo SKBUILD_CMAKE_ARGS="-G Ninja;-DCMAKE_Fortran_COMPILER=$(command -v gfortran-13);-DCMAKE_C_COMPILER=$(command -v gcc-13)" >> $env:GITHUB_ENV
 
       - name: windows-config
         if: startsWith(matrix.os, 'windows')
@@ -39,7 +39,9 @@ jobs:
         run: python -m pip install cibuildwheel==3.3.1
 
       - name: Build wheels
-        run:  python -m cibuildwheel --output-dir wheelhouse
+        run: |
+          echo SKBUILD_CMAKE_ARGS: $SKBUILD_CMAKE_ARGS
+          python -m cibuildwheel --output-dir wheelhouse
 
       - uses: actions/upload-artifact@v6
         with:
