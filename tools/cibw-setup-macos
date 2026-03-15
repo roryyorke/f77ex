@@ -2,15 +2,13 @@
 
 set -ex
 
-sudo ln -sf /opt/homebrew/bin/gfortran-13 /usr/local/bin/slycot-gfortran 
-sudo ln -sf /opt/homebrew/bin/gcc-13 /usr/local/bin/slycot-gcc 
+echo $(command -v gfortran-13)
 
-if [ ! -x $(realpath $(command -v slycot-gfortran)) ]; then
-    echo "Can't find Fortran compiler"
-    exit 1
-fi
+gfortran_bin=/opt/homebrew/bin/gfortran-13
+gcc_bin=/opt/homebrew/bin/gcc-13
 
-if [ ! -x $(realpath $(command -v slycot-gcc)) ]; then
-    echo "Can't find C compiler"
-    exit 1
-fi
+[ -x "${gfortran_bin}" ] || { echo "Fortran compiler ${gfortran_bin} doesn't exist or not executable"; exit 1; }
+[ -x "${gcc_bin}" ] || { echo "C compiler ${gcc_bin} doesn't exist or not executable"; exit 1; }
+
+sudo ln -sf "${gfortran_bin}" /usr/local/bin/slycot-gfortran
+sudo ln -sf "${gcc_bin}" /usr/local/bin/slycot-gcc
