@@ -13,10 +13,12 @@ set -ex
 
 # ls -l $FC_DIR
 
-ls -l /opt/homebrew/Cellar/gcc/15.2.0_1/lib/gcc/current/gcc/aarch64-apple-darwin23/15/
+# ls -l /opt/homebrew/Cellar/gcc/15.2.0_1/lib/gcc/current/gcc/aarch64-apple-darwin23/15/
+
+gfortran-13 -print-search-dirs
 
 echo ==gfortran -Wl,-t output
-gfortran-13 -Wl,-t
+gfortran-13 -Wl,-t ./tools/hello.f -o hello
 echo ==gfortran -Wl,-t output end
 
 gcc13libdir=$(dirname gfortran-13 -Wl,-t 2>/dev/null|grep libgcc.a)
