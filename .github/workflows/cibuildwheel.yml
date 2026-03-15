@@ -9,7 +9,7 @@ jobs:
     strategy:
       matrix:
         os: [macos-14] # ubuntu-latest] #, windows-latest, ]
-        cibw_build: [cp313-macosx_arm64, cp313-macosx_x86_64, cp313-macosx_universal2]
+        cibw_build: [cp313-macosx_universal2]
     env:
       CIBW_BUILD: ${{matrix.cibw_build}}
       MACOSX_DEPLOYMENT_TARGET: 14.0
