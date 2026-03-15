@@ -26,7 +26,7 @@ jobs:
         # run a script that setups up commands slycot-gcc and slycot-gfortran
         # these will be used in build and repair stages
         run: |
-          ./tools/cibw-setup-macos
+          bash ./tools/cibw-setup-macos
           echo SKBUILD_CMAKE_ARGS="-G Ninja;-DCMAKE_Fortran_COMPILER=slycot-gfortran;-DCMAKE_C_COMPILER=slycot-gcc" >> $env:GITHUB_ENV
 
       - name: windows-config
