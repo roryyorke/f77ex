@@ -46,3 +46,7 @@ unzipped/f77ex/example.cpython-313-darwin.so:
 * search cibuildwheel macos gfortran and...
 
 https://github.com/pypa/cibuildwheel/discussions/1051#discussioncomment-2371120
+
+* macos 14
+
+earliest gfortran is gfortran-13
