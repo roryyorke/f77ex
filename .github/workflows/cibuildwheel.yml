@@ -10,7 +10,7 @@ jobs:
       matrix:
         os: [windows-latest]
     env:
-      CIBW_BUILD: "cp313-win32"
+      CIBW_BUILD: "cp313-win_amd64"
       MACOSX_DEPLOYMENT_TARGET: 14.0
 
     steps:
