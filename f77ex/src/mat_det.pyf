@@ -1,6 +1,6 @@
 !    -*- f90 -*-
 
-python module example
+python module mat_det
 interface
    subroutine square(b, x)
      real intent(out) :: b
