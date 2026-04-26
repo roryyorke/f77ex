@@ -6,6 +6,8 @@ build-backend = "scikit_build_core.build"
 name = "f77ex"
 version = "0.0.1"
 dependencies = ["numpy"]
+license = "BSD-2-Clause"
+license-files = ["LICENSE*.txt"]
 
 [tool.scikit-build]
 ninja.version = ">=1.10"
