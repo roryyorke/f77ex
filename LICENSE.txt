@@ -1,3 +1,5 @@
+f77ex Fortran 77 OpenBLAS bundling example
+
 MIT No Attribution
 
 Copyright 2026 Rory Yorke
