@@ -45,9 +45,9 @@ def copy_libraries(project_root):
     shutil.copytree(src, dst)
 
 
-def copy_mat_det_license(project_root):
-    inname = os.path.join(project_root, "f77ex", "src", "external", "LICENSE.txt")
-    outname = os.path.join(project_root, "LICENSE-mat_det.txt")
+def copy_det77_license(project_root):
+    inname = os.path.join(project_root, "f77ex", "src", "det77", "LICENSE.txt")
+    outname = os.path.join(project_root, "LICENSE-det77.txt")
     print(f'Copying license file {inname} to {outname}')
     shutil.copyfile(inname, outname)
 
@@ -90,7 +90,7 @@ def main():
     project_root = sys.argv[2]
     install_openblas32(version)
     copy_libraries(project_root)
-    copy_mat_det_license(project_root)
+    copy_det77_license(project_root)
     copy_scipy_openblas32_licenses(project_root)
 
 

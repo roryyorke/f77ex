@@ -1,0 +1,51 @@
+* TODO write README.md
+- the goal: binary wheels for Python package incorporating LAPACK- and BLAS-dependent Fortran77 code
+
+- requirements:
+  - allow user to do ~pip install --binary :all: f77ex~
+  - build-from-source allows using other compilers and LAPACK&BLAS libraries
+  - editable build supported
+
+- wheels built for:
+  - list
+
+- wheels not built for Tier 1 platforms
+  - i686-linux..thingy
+
+- steps:
+  - transform LAPACK and BLAS calls to <what>_ with preprocessor
+    - transformations taken from Scipy
+  - prepare license files
+  - repair wheel libs
+    - macOS needed some specific care
+    - delvewheel not (yet?) supported by cibuildwheel
+
+
+
+- uses tools:
+  - scikit-build-core
+
+  - cmake
+
+  - f2py
+
+  - cibuildwheel
+
+  - wheel repairers:
+    - auditwheel
+    - delvewheel
+    - the macOS one
+
+
+- possible problems:
+  - uses gcc on Windows; builds fine, but normally one uses MSVC
+
+- alternative approaches:
+  - post compile symbol changes are cleaner, but don't worth on macOS
+
+
+* TODO CI for building wheels [0/2]
+
+** TODO sdist-then-build from Slycot
+
+** TODO twine
