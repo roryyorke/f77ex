@@ -40,7 +40,7 @@ target_link_libraries(fortranobject PUBLIC Python::NumPy)
 target_include_directories(fortranobject PUBLIC "${F2PY_INCLUDE_DIR}")
 set_property(TARGET fortranobject PROPERTY POSITION_INDEPENDENT_CODE ON)
 
-add_library(f77ex_fortran STATIC "${CMAKE_CURRENT_SOURCE_DIR}/f77ex/src/external/mat_det.f")
+add_library(f77ex_fortran STATIC "${CMAKE_CURRENT_SOURCE_DIR}/f77ex/src/det77/mat_det.f")
 set_property(TARGET f77ex_fortran PROPERTY POSITION_INDEPENDENT_CODE ON)
 if(F77EX_BUNDLE_OPENBLAS)
   target_compile_options(f77ex_fortran

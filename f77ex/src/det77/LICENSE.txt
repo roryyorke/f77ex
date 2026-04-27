@@ -1,4 +1,4 @@
-mat_det: compute determinant
+det77: compute determinant using in Fortran77 using LAPACK
 
 MIT No Attribution
 
