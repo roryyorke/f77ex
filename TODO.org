@@ -1,4 +1,74 @@
 * TODO write README.md
+
+This project demonstrates how to build binary wheels for Python
+packages that incorporate LAPACK- and BLAS-dependent Fortran 77 code.
+
+To read this you'll need basic knowlege of [[https://packaging.python.org/en/latest/][Python packaging]], including
+use of ~pip~, and terms like "wheel" and "sdist".
+
+** Requirements
+
+The build setup should:
+  - allow end-users to run  ~pip install --only-binary :all: f77ex~ (where ~f77ex~ is the package name) to install the package
+  - allow building from sdist using user-configurable compilers and LAPACK&BLAS libraries
+  - support editable installs
+
+** Supported platforms
+
+The setup described here can build wheels for the following CPython platforms:
+
+  | PEP 11 target triple | PEP 11 Tier | Platform tags                               |
+  |----------------------+-------------+---------------------------------------------|
+  |                      |             | macosx_14_0_arm64                           |
+  |                      |             | manylinux_2_28_x86_64, musllinux_1_2_x86_64 |
+  |                      |             | win_amd64                                   |
+  |                      |             |                                             |
+
+
+There's one PEP 11 Tier one platform that's *not* supported, namely
+~i686-pc-windows-msvc~.  NumPy 2.4.4 (released March 2026) has binary
+wheels for this platform, and it may not be very difficult to get this
+to work too.
+
+** Tools used
+
+*** scikit-build-core
+
+This is the build back-end.  It's largely configured via [
+
+  - scikit-build-core
+
+  - cmake
+
+  - f2py
+
+  - cibuildwheel
+
+  - wheel repairers:
+    - auditwheel
+    - delvewheel
+    - the macOS one
+
+
+
+** Build steps
+
+The wheel building is done by cibuildwheel.  The customizations for bundling OpenBLAS are:
+
+1. Pre-build, copy files from scipy_openblas32
+
+   - install scipy_openblas32 using pip
+   - copy OpenBLAS libraries into a known location for building
+   - copy OpenBLAS licenses into a known location to be added to the wheel
+
+2. During build, Fortran source is built with prefix ~SCIPY_~ added to all LAPACK and BLAS functions; e.g., ~DGETRF~ becomes ~SCIPY_DGETRF~
+
+3. Post-build wheel repair is given access to all necessary libraries
+
+
+
+
+
 - the goal: binary wheels for Python package incorporating LAPACK- and BLAS-dependent Fortran77 code
 
 - requirements:
@@ -7,10 +77,14 @@
   - editable build supported
 
 - wheels built for:
-  - list
 
-- wheels not built for Tier 1 platforms
-  - i686-linux..thingy
+  | Pep 11 target triple | Packaging name(s) |
+  |----------------------+-------------------|
+  | aarch64-apple-darwin | macosx_14_0_arm64 |
+  | etc                  |                   |
+  
+- PEP 11 Tier 1 platforms for which wheels are *not* built
+  - i686-pc-windows-msvc: couldn't get these to build
 
 - steps:
   - transform LAPACK and BLAS calls to <what>_ with preprocessor
@@ -19,8 +93,6 @@
   - repair wheel libs
     - macOS needed some specific care
     - delvewheel not (yet?) supported by cibuildwheel
-
-
 
 - uses tools:
   - scikit-build-core
@@ -36,13 +108,21 @@
     - delvewheel
     - the macOS one
 
-
 - possible problems:
-  - uses gcc on Windows; builds fine, but normally one uses MSVC
+  - the preprocessor is intended for C code, and might break on Fortran77 code
+    - ref to gfortran docs here?
+  - uses gcc on Windows; builds and runs fine, but normally MSVC is used here
+    - any docs on this?
 
 - alternative approaches:
-  - post compile symbol changes are cleaner, but don't worth on macOS
+  - post compile symbol changes are cleaner, but don't worth on macOS arm64
+    - ref to the objcopy-like tool, and note on arm64 limitation
+  - C code using OpenBLAS would be similar, though the preprocessor step is better defined
+  - Scipy uses meson-python but doesn't, as far as I know, use Fortran77 code in the same way as Slycot
+  - didn't investigate what numpy does
 
+- troubleshooting
+  - verbose builds for scikit-build-core, CMake
 
 * TODO CI for building wheels [0/2]
 
