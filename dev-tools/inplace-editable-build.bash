@@ -23,7 +23,7 @@
 
 set -euo pipefail
 
-if [ ! -f ./tools/inplace-editable-build.bash ]; then
+if [ ! -f ./dev-tools/inplace-editable-build.bash ]; then
     echo "Run this from project root"
     exit 1;
 fi
@@ -32,7 +32,7 @@ echo "--Build"
 python -m venv venv-build
 source venv-build/bin/activate
 
-pip install --progress-bar off setuptools_scm scikit-build-core numpy
+pip install --progress-bar off scikit-build-core numpy
 
 BLA_VENDOR=Generic pip install --no-build-isolation --editable . --verbose --config-settings skbuild.build.verbose=true --config-settings skbuild.build-dir=build
 

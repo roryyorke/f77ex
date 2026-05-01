@@ -266,3 +266,10 @@ investigate their build setup.
 * Possible improvements
 
 Both ~CMAKE_ARGS~ and ~SKBUILD_CMAKE_ARGS~ are used in the Github workflow; use only one.
+
+* Other files
+
+ - ./.github/workflows/editable.yml : Workflow to check editable install
+ - ./dev-tools/inplace-editable-build.bash: Script to for editable install
+ - ./dev-tools/cibw.bash: Script to run cibuildwheel locally
+ - ./dev-tools/check_det.py: Check determinant output is OK
