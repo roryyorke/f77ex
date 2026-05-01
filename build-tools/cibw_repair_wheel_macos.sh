@@ -5,7 +5,7 @@
 #  Usage:
 #    bash cibw_repair_wheel_macos.sh <dest-dir> <wheel> <project-root-dir>
 #
-# Requires environment variable SLYCOT_LIBS; this is a list of
+# Requires environment variable F77EX_LIBS; this is a list of
 # compiler runtime libraries.  For gfortran, such a list can be
 # generated with
 #
@@ -17,8 +17,8 @@ dest_dir=$1
 wheel=$2
 project_root=$3
 
-if [ -z "${SLYCOT_LIBS+x}" ]; then
-   echo "Variable SLYCOT_LIBS must be defined" 1>&2
+if [ -z "${F77EX_LIBS+x}" ]; then
+   echo "Variable F77EX_LIBS must be defined" 1>&2
    exit 1
 fi
 
@@ -35,6 +35,6 @@ if [ ! -z $DYLD_LIBRARY_PATH ]; then
     exit 1;
 fi
 
-export DYLD_LIBRARY_PATH=$lib_loc:$SLYCOT_LIBS
+export DYLD_LIBRARY_PATH=$lib_loc:$F77EX_LIBS
 
 delocate-wheel -w $dest_dir $wheel

@@ -116,7 +116,7 @@ scipy-openblas32 libraries.
 
 For macOS things are a litle more complicated, and the repair step
 invokes Bash script [[./build-tools/cibw_repair_wheel_macos.sh]].  This
-script uses environment variable ~SLYCOT_LIBS~, defined in the Github
+script uses environment variable ~F77EX_LIBS~, defined in the Github
 workflow, to change which gfortran libraries the main OpenBLAS library
 is linked to, sets ~DYLD_LIBRARY_PATH~ to include ~build-libs~, and
 and runs the ~delocate-wheel~ tool.
