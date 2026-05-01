@@ -32,6 +32,14 @@ jobs:
           echo "sdist=$(find dist -type f)" >> "$GITHUB_ENV"
           echo "sdist=$(find dist -type f -printf \"%f\")" >> "$GITHUB_OUTPUT"
 
+      - name: Upload sdist
+        uses: actions/upload-artifact@v7
+        id: artifact-upload-step
+        with:
+            archive: false
+            if-no-files-found: error
+            path: ${{ env.sdist }}
+
 
   build-wheels:
     name: Build wheels on ${{ matrix.os }}
