@@ -10,8 +10,7 @@ license = "MIT-0 AND BSD-2-Clause AND GPL-3.0-with-GCC-exception"
 license-files = ["LICENSE*.txt"]
 
 [tool.scikit-build]
-ninja.version = ">=1.10"
-cmake.version = ">=3.17.2"
+wheel.exclude = ["f77ex/src/", "f77ex/scipy-openblas-symbols"]
 
 [tool.cibuildwheel]
 # scipy-openblas32 version specified here

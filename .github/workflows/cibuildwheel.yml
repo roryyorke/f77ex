@@ -50,6 +50,7 @@ jobs:
         os: [ubuntu-latest, macos-15-intel, windows-latest, ubuntu-24.04-arm,  macos-14]
     env:
       CIBW_ENVIRONMENT: "CMAKE_ARGS='-DF77EX_BUNDLE_OPENBLAS=ON'"
+      # to save CI time, only build for Python 3.14
       CIBW_BUILD: "cp314-*"
 
     steps:
