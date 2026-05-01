@@ -1,38 +1,35 @@
 [build-system]
-requires = ["scikit-build-core", "numpy", "scipy_openblas32"]
+requires = ["scikit-build-core", "numpy"]
 build-backend = "scikit_build_core.build"
 
 [project]
 name = "f77ex"
 version = "0.0.1"
 dependencies = ["numpy"]
+license = "MIT-0 AND BSD-2-Clause AND GPL-3.0-with-GCC-exception"
+license-files = ["LICENSE*.txt"]
 
 [tool.scikit-build]
-ninja.version = ">=1.10"
-cmake.version = ">=3.17.2"
-wheel.exclude = ["f77ex/src/"]
+wheel.exclude = ["f77ex/src/", "f77ex/scipy-openblas-symbols"]
 
 [tool.cibuildwheel]
+# scipy-openblas32 version specified here
+before-build = "python {project}/build-tools/cibw_before_build.py 0.3.31.22.1 {project}"
 test-command = "python -m f77ex.test.test_mat_det"
+
+skip = ["cp38-*", "cp39-*", "cp3??t-*", "*-win32", "*-win_arm64"]
 
 [tool.cibuildwheel.linux]
 repair-wheel-command = [
-  "pip install scipy_openblas32",
-  "LD_LIBRARY_PATH=$(python -c \"import scipy_openblas32; import os.path; print(scipy_openblas32.get_lib_dir())\")",
+  "LD_LIBRARY_PATH=./build-libs",
   "auditwheel repair -w {dest_dir} {wheel}",
 ]
 
-[tool.cibuildwheel.macos]
+[tool.cibuildwheel.windows]
 repair-wheel-command = [
-  "pip install scipy_openblas32",
-  # this doesn't work; delocate-wheel can't find scipy-openblas libs
-  "LD_LIBRARY_PATH=$(python -c \"import scipy_openblas32; import os.path; print(scipy_openblas32.get_lib_dir())\")",
-  "delocate-wheel -w {dest_dir} {wheel}",
+  "pip install delvewheel",
+  "delvewheel repair --add-path build-libs -w {dest_dir} {wheel}"
 ]
 
-[tool.cibuildwheel.windows]
-before-build = "pip install delvewheel"
-repair-wheel-command = [
-  "pip install scipy_openblas32",
-  "python tools/delvewheel_wrapper.py repair -w {dest_dir} {wheel}"
-]
+[tool.cibuildwheel.macos]
+repair-wheel-command = "bash {project}/build-tools/cibw_repair_wheel_macos.sh {dest_dir} {wheel} {project}"

@@ -1,25 +1,275 @@
-Demonstrate creating a Python wheel from Fortran source linked against
-https://github.com/MacPython/openblas-libs
+This project demonstrates how to build binary wheels for Python
+packages that incorporate LAPACK- and BLAS-dependent Fortran 77 code.
 
-* manylinux build
+This is a model of the larger [[https://github.com/python-control/Slycot][Slycot]] project, which is a Python
+wrapper for the [[https://github.com/SLICOT/SLICOT-Reference][SLICOT]] library, a control system library written in
+Fortran 77.  Here, the place of SLICOT is taken by the trivial [[./f77ex/src/det77][det77]]
+library, which computes a matrix determinant using LAPACK routine
+DGETRF.
 
-Needs bash and docker.  Tested on Debian 13 x64 host.  Includes auditwheel step.
+Readers are assumed to have basic knowledge of:
+  - compiling, linking, and dynamic libraries
+  - [[https://packaging.python.org/en/latest/][Python packaging]], including use of the tool pip, and be familiar with terms like "wheel" and "sdist".
+  - NumPy's [[https://numpy.org/doc/stable/f2py/f2py-reference.html][f2py]]
+  - [[https://cmake.org/][CMake]]
 
-Run ~./ci/docker-build.bash~ to build ~f77ex-0.0.1-cp313-cp313-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl~.
+The build configuration needed for bundling OpenBLAS is distributed in
+many files, making it difficult to explain concisely.  If you can
+improve the build process or explanation, please let me know.
 
-* cibuildwheel
+* Requirements
 
-** basic check
+The build setup should:
+  - allow end-users to run  ~pip install --only-binary :all: f77ex~ (where ~f77ex~ is the package name) to install the package
+  - allow building from sdist using user-configurable compilers and LAPACK&BLAS libraries
+  - support editable installs
 
-~CIBW_BUILD=cp313-manylinux_x86_64 cibuildwheel~
+* Supported platforms
 
-** Windows
+The setup described here can build wheels for the following CPython platforms:
 
- - compile with Ninja, gcc, gfortran via SKBUILD_CMAKE_ARGS
-   - perhaps using ninja or make one can still use msvc - does it matter?
+  | PEP 11 target triple      | PEP 11 Tier | Platform tags                                 |
+  |---------------------------+-------------+-----------------------------------------------|
+  | aarch64-apple-darwin      |           1 | macosx_14_0_arm64                             |
+  | aarch64-unknown-linux-gnu |           1 | manylinux_2_28_aarch64, musllinux_1_2_aarch64 |
+  | x86_64-apple-darwin       |           2 | macosx_15_0_x86_64                            |
+  | x86_64-pc-windows-msvc    |           1 | win_amd64                                     |
+  | x86_64-unknown-linux-gnu  |           1 | manylinux_2_28_x86_64, musllinux_1_2_x86_64   |
 
- - wheel repair
-   - happens after build environment deleted
-   - install scipy_openblas32
-   - install delvewheel
-   - use delvewheel_wrapper.py to manipulate PATH to find scipy_openblas DLL
+There's one PEP 11 Tier one platform that's *not* supported, namely
+~i686-pc-windows-msvc~.  I couldn't easily get it to work and didn't
+spend much time on this platform, which is a bit old, but there's no
+fundamental reason for it to be impossible.
+
+* Special steps
+
+Compared to a typical binary wheel build, there are 3 special steps
+needed:
+
+  1. Make bundle files available before starting build.
+  2. Adjust LAPACK&BLAS symbol names during Fortran 77 compilation.
+  3. "Repair" the wheel, adjusting dynamic library linking and search paths.
+
+Step 1 would be needed by any wheel bundling OpenBLAS, and NumPy does
+something similar.  The wheel repair of step 3 is also standard for
+binary wheels, but there are some extra actions needed.
+
+The rest of the document explains overall build works, referencing
+particular portions of files that achieve these ends.
+
+* Tools used, and where they are configured
+
+This is a list of tools used.  cibuildwheel and scikit-build-core are configured via pyproject.toml, but settings there can be overridden by environment variables and command-line arguments.  CMake is similarly configured by ~CMakeLists.txt~, but also affected by environment variables.
+
+   | Tool              | Purpose                                      | Configuration                      |
+   |-------------------+----------------------------------------------+------------------------------------|
+   | Github Actions    | Automate running                             | .github/workflows/cibuildwheel.yml |
+   | cibuildwheel      | Build wheels for different platforms         | pyproject.toml, environment        |
+   | scikit-build-core | Python package build back-end                | pyproject.toml, environment        |
+   | CMake             | Compiler configuration                       | CMakeLists.txt, environment        |
+   | ninja             | Compiler runner                              | Generated at build-time            |
+   | gcc, gfortran     | Compilers                                    | Generated at build-time            |
+   | scipy-openblas32  | Wheel providing pre-built OpenBLAS libraries | None                               |
+
+* Build configuration
+
+** Github action
+
+The build runs in Github Actions, and the workflow is configured in [[.github/workflows/cibuildwheel.yml]].
+
+The workflow has a first job then generates and uploads an sdist.
+
+The second job builds the wheel.  It has a job-wide environment
+variable ~F77EX_BUNDLE_OPENBLAS~ that is set to ~ON~; this is used in
+~CMakeLists.txt~ to link against OpenBLAS libraries.
+
+The wheel-building job has per-platform configuration:
+
+  - for macOS:
+    - ~SKBUILD_CMAKE_ARGS~ is set to choose gcc-13 and gfortran-13 for compilation, and Ninja as the build tool
+    - the gfortran-13 library search directory is added to the cibuildwheel environment variables
+    - ~MACOSX_DEPLOYMENT_TARGET~ is set according to the target
+
+  - for Windows:
+    - ~SKBUILD_CMAKE_ARGS~ is set to choose mingw64 gcc and gfortran for compilation, and Ninja as the build tool
+
+The job then installs and invokes ~cibuildwheel~.
+
+** cibuildwheel
+
+cibuildwheel is configured via the ~[tool.cibuildwheel*]~ entries in
+[[./pyproject.toml]].  There are four sections here: a common
+~before-build-command~, and per-platform ~repair-wheel-command~
+entries.
+
+*** cibuildwheel before-build-command
+
+This invokes script [[./build-tools/cibw_before_build.py]] , which does 4 things:
+
+  1. Installs scipy-openblas32
+  2. Copies all scipy-openblas32 libraries into ~build-libs~ in the project root
+  3. Copies the license of the included "det77" project to ~LICENSE-det77.txt~
+  4. Copies the scipy-openblas32 licenses to ~LICENSE-scipy-openblas32*.txt~
+
+Step 3 is artificial, and models a similar, necessary step taken when building Slycot, which incorporates the differently licensed SLICOT.
+
+*** cibuildwheel repair-wheel-command
+
+For Linux the normal tool auditwheel is used; the only custom
+configuration is adding ~build-libs~, which contains the
+scipy-openblas32 libraries, to ~LD_LIBRARY_PATH~ so they will be
+included in the repair process.
+
+For Windows the repair tool delvewheel is installed (cibuildwheel
+3.3.1 does not automatically install and use delvewheel), and invoked
+with argument ~--add-path build-libs~ so that it can find the
+scipy-openblas32 libraries.
+
+For macOS things are a little more complicated, and the repair step
+invokes Bash script [[./build-tools/cibw_repair_wheel_macos.sh]].  This
+script uses environment variable ~F77EX_LIBS~, defined in the Github
+workflow, to change which gfortran libraries the main OpenBLAS library
+is linked to, sets ~DYLD_LIBRARY_PATH~ to include ~build-libs~, and
+and runs the delocate-wheel tool.
+   
+** scikit-build-core
+
+scikit-build-core is the build backend, and is mostly configured in
+[[./pyproject.toml]] in the ~project~ and ~tool.scikit-build~ sections;
+some configuration is also done via the ~SKBUILD_CMAKE_ARGS~
+environment variable set in the Github workflow file.
+
+The ~project.license-files~ entry is a glob expression so that the
+project's own license ([[./LICENSE.txt]]) is included, and so are the
+various license files added during by before-build-command.
+
+** CMake
+
+This is where the details of the build are configured, including using
+f2py to create wrappers for the Fortran 77 code that can be use from
+Python.
+
+The parts of interest are the three uses of the ~F77EX_BUNDLE_OPENBLAS~ variable.
+
+*** Finding LAPACK library
+
+The first use when setting up the LAPACK&BLAS library to link against; if ~F77EX_BUNDLE_OPENBLAS~ is set, CMake looks for one of the variants of library provided by scipy-openblas32, and stores the result in CMake variable ~OPENBLAS_LIBRARY_FILE~.
+
+If ~F77EX_BUNDLE_OPENBLAS~ is *not* set, then CMake uses its built-in LAPACK-finding machinery instead; this satisfies the requirement that users building from source can choose their LAPACK vendor.
+
+#+begin_src cmake
+if(F77EX_BUNDLE_OPENBLAS)
+  set(OPENBLAS_DIR "${CMAKE_CURRENT_SOURCE_DIR}/build-libs")
+
+  find_library(
+    OPENBLAS_LIBRARY_FILE
+    NAMES libscipy_openblas.lib libscipy_openblas.dylib libscipy_openblas.so scipy_openblas.lib
+    PATHS ${OPENBLAS_DIR}
+    NO_DEFAULT_PATH
+    REQUIRED)
+else()
+  find_package(LAPACK REQUIRED)
+endif()
+#+end_src
+
+*** Converting LAPACK calls
+
+The second use of ~F77EX_BUNDLE_OPENBLAS~ is to add a preprocessor
+flag for Fortran 77 compilation to substitute scipy-openblas32 symbols
+for standard LAPACK and BLAS symbols.
+
+The list of symbols, in file
+[[./scipy-openblas-symbols/scipy-openblas-symbols.def]], was taken from
+SciPy, and may be incomplete: for SLICOT I had to add the obscure
+~DLAMC3~.  If the linker complains about missing symbols,
+~own_symbols~ is the place to add them.
+
+#+begin_src cmake
+if(F77EX_BUNDLE_OPENBLAS)
+  target_compile_options(f77ex_fortran
+    PRIVATE
+    @${CMAKE_CURRENT_SOURCE_DIR}/f77ex/scipy-openblas-symbols/scipy-openblas-symbols.def
+    -ffixed-line-length-132)
+endif()
+#+end_src
+
+*** Linking LAPACK library
+
+The third use of ~F77EX_BUNDLE_OPENBLAS~ at link-time, and links in the scipy-openblas32 libraries.
+
+#+begin_src cmake
+if(F77EX_BUNDLE_OPENBLAS)
+  target_link_libraries(mat_det PRIVATE f77ex_fortran ${OPENBLAS_LIBRARY_FILE})
+  # (only?) needed for editable no-isolation builds
+  set_target_properties(mat_det PROPERTIES INSTALL_RPATH ${OPENBLAS_DIR})
+else()
+  target_link_libraries(mat_det PRIVATE f77ex_fortran LAPACK::LAPACK)
+endif()
+#+end_src
+
+* Possible problems
+
+The gfortran "preprocessor" is actually the C preprocessor, and [[https://gcc.gnu.org/onlinedocs/gfortran/Preprocessing-Options.html#index-cpp][there
+are some caveats on its use]].
+
+For Windows, [[https://packaging.python.org/en/latest/guides/packaging-binary-extensions/#binary-extensions-for-windows][the Python Packaging Guide recommends]] using Visual Studio,
+not gcc.  I haven't investigated combining gfortran and Visual Studio.
+It may be possible to use flang instead of gfortran on Windows; I
+haven't investigated if it supports the preprocessing option used
+here.
+
+The Github workflow sets the ~MACOSX_DEPLOYMENT_TARGET~ to 14.0 for
+Arm (aarch64) and 15.0 for Intel (x86_64).  I'm not a macOS user, but
+I understand these are *fairly* old versions.  At-time-of-writing
+recent NumPy v2.4.4 has binary wheels for 11.0 (arm64) and 10.13
+(x86_64), but I didn't investigate how to build such wheels.
+
+* Alternative approaches
+
+** objcopy
+
+Initially I developed this on Linux, and instead of preprocessing the
+source I used [[https://sourceware.org/binutils/docs/binutils/objcopy.html][objcopy]] to post-process the compiled ~f77ex~ static
+library to change the LAPACK and BLAS names to scipy-openblas32 ones.
+To my surprise this also worked on Windows, but *not* on macOS.  The
+third-party [[https://www.agner.org/optimize/#objconv][objconv]] tool for macOS only works for x86 platforms.
+
+** C and C++
+
+If you're compiling C (or C++) code that uses LAPACK or BLAS, OpenBLAS
+provide a macro to define a custom prefix, so the wholesale
+preprocessor symbol redefinition used here is not needed.
+
+** Generating preprocessor definitions
+
+It may be possible to generate
+[[./f77ex/scipy-openblas-symbols/scipy-openblas-symbols.def]] by
+processing symbols of form ~scipy_*~ exported by the OpenBLAS library
+in scipy-openblas32.  However, the symbol list is probably fairly
+static; and, for example, ~scipy_dgetrf~ has 2 matching entries:
+
+```
+$ nm libscipy_openblas.so |grep -i scipy_dgetrf
+000000000029de90 T scipy_dgetrf_
+0000000000f25930 T scipy_dgetrf2_
+```
+
+This could presumably be handled with better pattern matching and deduplication.
+
+** Other projects
+
+SciPy and NumPy also bundle scipy-openblas32 (they are the reason
+scipy-openblas32 exists); if this approach doesn't work for you,
+investigate their build setup.
+
+* Possible improvements
+
+Both ~CMAKE_ARGS~ and ~SKBUILD_CMAKE_ARGS~ are used in the Github workflow; use only one.
+
+* Other files
+
+ - [[./.github/workflows/editable.yml]]: Workflow to check editable install
+ - [[./dev-tools/inplace-editable-build.bash]]: Script to for editable install
+ - [[./dev-tools/cibw.bash]]: Script to run cibuildwheel locally
+ - [[./dev-tools/check_det.py]]: Check determinant output is OK
+ - [[./f77ex/scipy-openblas-symbols/]]: script and data to generate preprocessor replacement directives

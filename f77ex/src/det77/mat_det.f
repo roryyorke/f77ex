@@ -1,4 +1,4 @@
-C     Copied from scikit-build-core Fotran example
+C     Copied from scikit-build-core Fortran example
 
 C     Basic non-LAPACK-dependent routine for sanity checks
       SUBROUTINE SQUARE(B, X)

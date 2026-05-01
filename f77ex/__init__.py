@@ -1,4 +1,4 @@
-from .example import square, mat_det as _mat_det
+from .mat_det import square, mat_det as _mat_det
 
 def mat_det(a):
     det_a, info = _mat_det(a.shape[0], a)
