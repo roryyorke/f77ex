@@ -13,10 +13,10 @@ Readers are assumed to have basic knowlege of:
   - NumPy's [[https://numpy.org/doc/stable/f2py/f2py-reference.html][f2py]]
   - [[https://cmake.org/][CMake]]
 
-The bundling-specific configuration is unfortunately contained in
-various different levels of build configuration, making it difficult
-to explain concisely.  If you can improve the build process or
-explanation, please let me know.
+The build configuration needed for bundlding OpenBLAS is unfortunately
+distributed in many files, making it difficult to explain concisely.
+If you can improve the build process or explanation, please let me
+know.
 
 * Requirements
 
